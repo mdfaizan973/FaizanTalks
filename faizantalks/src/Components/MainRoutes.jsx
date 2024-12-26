@@ -6,7 +6,7 @@ export default function MainRoutes() {
     <div>
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/fazain-talks" element={<FaizanTalks />} />
+        <Route path="/faizan-talks" element={<FaizanTalks />} />
       </Routes>
     </div>
   );
