@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { DeleteOutlined } from "@ant-design/icons";
 import styled from "styled-components";
+import { apiUrl } from "../api/api";
 const Container = styled.div`
   display: flex;
   height: 95vh;
@@ -211,9 +212,6 @@ export default function FaizanTalks() {
   const [search, setSearch] = useState("");
   const [savedChats, setSavedChats] = useState([]);
   const [currentChatKey, setCurrentChatKey] = useState(null);
-
-  const apiKey = "AIzaSyCmZo3BPYdF1bVl7bvXC_Zbo9xQENxWxBs";
-  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("savedChats")) || [];
