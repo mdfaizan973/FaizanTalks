@@ -7,12 +7,13 @@ const SectionContainer = styled.section`
   justify-content: space-between;
   align-items: center;
   padding: 60px 80px;
-  background: linear-gradient(135deg, #ffffff, #f0f4f8);
+  /* background: linear-gradient(135deg, #ffffff, #f0f4f8); */
+  /* background: linear-gradient(to bottom, #83b8c8, #a0cad8); */
   border-radius: 15px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); */
   gap: 60px;
   transition: all 0.3s ease-in-out;
-
+  height: 80vh;
   @media (max-width: 1024px) {
     flex-direction: column;
     padding: 40px 20px;
@@ -98,13 +99,16 @@ const RightSection = styled.div`
 
 // Image style
 const Image = styled.img`
-  max-width: 100%;
+  width: 80%;
   height: auto;
   border-radius: 12px;
   transition: transform 0.3s ease;
+  border-radius: 50%;
+  box-shadow: rgba(0, 0, 0, 0.04) 0px 3px 5px;
+  /* box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); */
 
   &:hover {
-    transform: scale(1.05);
+    transform: scale(1.02);
   }
 `;
 
@@ -130,7 +134,7 @@ export default function HomePage() {
       {/* Right Section */}
       <RightSection>
         <Image
-          src="https://img.freepik.com/premium-vector/robot-chatbot-with-laptop-ai-business-assistant_189033-2589.jpg"
+          src="https://i.pinimg.com/originals/4b/cb/1f/4bcb1fb72d1d08efa44efa5ceb712ec7.gif"
           alt="AI Assistant"
         />
       </RightSection>
