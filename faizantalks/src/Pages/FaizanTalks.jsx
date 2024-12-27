@@ -381,7 +381,7 @@ export default function FaizanTalks() {
             <br />
             Or
             <br />
-            You can go the existing Chat
+            you can continue with an existing chat.
           </div>
         )}
       </MainContent>
