@@ -1,4 +1,3 @@
-
 import { Link as RouterLink } from "react-router-dom";
 import styled, { createGlobalStyle, keyframes } from "styled-components";
 
@@ -217,7 +216,7 @@ const Footer = styled.footer`
 export default function HomePage() {
   return (
     <>
-      <GlobalStyle />
+      {/* <GlobalStyle /> */}
       <Container>
         <Header>
           <Logo>Faizan Talks</Logo>
@@ -238,8 +237,8 @@ export default function HomePage() {
               interact with artificial intelligence.
             </HeroSubtitle>
             <RouterLink to="/faizan-talks">
-            <CTAButton>Start Chatting Now</CTAButton>
-              </RouterLink>
+              <CTAButton>Start Chatting Now</CTAButton>
+            </RouterLink>
           </HeroContent>
           <HeroImageContainer>
             <GlowEffect />
@@ -310,6 +309,4 @@ export default function HomePage() {
       </Container>
     </>
   );
-};
-
-
+}

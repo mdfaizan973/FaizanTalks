@@ -1,56 +1,94 @@
+"use client";
+
 import { useState, useEffect } from "react";
+import styled, { keyframes } from "styled-components";
 import { DeleteOutlined } from "@ant-design/icons";
-import styled from "styled-components";
-import { apiUrl } from "../api/api";
+
+// Animation keyframes
+const fadeIn = keyframes`
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+`;
+
+const pulse = keyframes`
+  0% { box-shadow: 0 0 0 0 rgba(0, 206, 201, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(0, 206, 201, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(0, 206, 201, 0); }
+`;
+
 const Container = styled.div`
   display: flex;
   height: 95vh;
-  background-color: #f5f7fa;
+  background-color: #f8f9fa;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  animation: ${fadeIn} 0.5s ease-out;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 `;
 
 const Sidebar = styled.aside`
-  width: 200px;
-  background-color: #1a202c;
+  width: 25%;
+  background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
   color: white;
-  padding: 20px;
+  padding: 25px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 2px 0 15px rgba(0, 0, 0, 0.1);
   overflow-y: auto;
-  border-radius: 10px;
+  position: relative;
+  z-index: 1;
+
   h2 {
-    margin-bottom: 20px;
-    font-size: 1.5rem;
-    font-weight: bold;
+    margin-bottom: 25px;
+    font-size: 1.8rem;
+    font-weight: 800;
+    background: linear-gradient(90deg, #00cec9, #0984e3);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+    letter-spacing: 0.5px;
   }
-  /* Custom scrollbar styles */
+
   &::-webkit-scrollbar {
-    width: 5px; /* Scrollbar width */
+    width: 6px;
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: #1a202c; /* Scrollbar thumb color */
-    border-radius: 10px; /* Rounded edges */
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
   }
 
   &::-webkit-scrollbar-track {
-    background-color: #f5f5f5; /* Optional: Track background color */
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
   }
 
   button {
-    background-color: #00cec9;
+    background: linear-gradient(90deg, #00cec9, #0984e3);
     color: white;
     border: none;
-    padding: 10px 15px;
+    padding: 12px 20px;
     font-size: 1rem;
-    border-radius: 5px;
+    border-radius: 10px;
     cursor: pointer;
-    margin-bottom: 20px;
-    transition: background-color 0.3s;
+    margin-bottom: 25px;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
 
     &:hover {
-      background-color: #0984e3;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    &:active {
+      transform: translateY(1px);
     }
   }
 
@@ -58,35 +96,56 @@ const Sidebar = styled.aside`
     list-style: none;
     padding: 0;
     margin: 0;
-    width: 80%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
 
   .chat-list li {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 8px 0;
-    padding: 10px;
-    border-bottom: 1px solid #ccc;
-    border-radius: 4px;
+    padding: 12px 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    transition: all 0.2s ease;
+    border-left: 3px solid transparent;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-left-color: #00cec9;
+      transform: translateX(3px);
+    }
   }
 
   .chat-text {
     cursor: pointer;
     flex: 1;
+    font-weight: 500;
+    font-size: 0.95rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: rgba(255, 255, 255, 0.9);
   }
 
   .delete-icon {
     cursor: pointer;
-    color: #ff5c5c;
-    border-radius: 4px;
+    color: rgba(255, 255, 255, 0.6);
+    border-radius: 50%;
     font-size: 16px;
     margin-left: 15px;
-  }
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
 
-  .delete-icon:hover {
-    background-color: #ff5c5c;
-    color: white;
+    &:hover {
+      background-color: #ff5c5c;
+      color: white;
+    }
   }
 `;
 
@@ -94,124 +153,203 @@ const MainContent = styled.main`
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  padding: 30px;
   background-color: #ffffff;
   overflow-y: auto;
+  position: relative;
 
   h1 {
-    color: #2d3436;
-    margin-bottom: 10px;
-    font-size: 1.5rem;
-    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+    font-weight: 700;
     line-height: 2.25rem;
+    animation: ${fadeIn} 0.6s ease-out;
   }
 
   .response-section {
-    margin-bottom: 20px;
-    text-align: right;
+    margin-bottom: 25px;
     height: 60vh;
     overflow-y: auto;
-    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-    border-radius: 10px;
-    padding: 5px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    border-radius: 15px;
+    padding: 20px;
+    background-color: #f8fafc;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    animation: ${fadeIn} 0.7s ease-out;
 
-    /* Custom scrollbar styles */
     &::-webkit-scrollbar {
-      width: 5px; /* Scrollbar width */
+      width: 6px;
     }
 
     &::-webkit-scrollbar-thumb {
-      background-color: grey; /* Scrollbar thumb color */
-      border-radius: 10px; /* Rounded edges */
+      background-color: rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
     }
 
     &::-webkit-scrollbar-track {
-      background-color: #f5f5f5; /* Optional: Track background color */
+      background-color: rgba(0, 0, 0, 0.05);
+      border-radius: 10px;
     }
   }
 
   .question {
     text-align: right;
-    background-color: #dfe6e9;
-    padding: 10px;
-    border-radius: 5px;
+    background: linear-gradient(90deg, #00cec9, #0984e3);
+    color: white;
+    padding: 12px 18px;
+    border-radius: 18px 18px 0 18px;
     display: inline-block;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     max-width: 60%;
     margin-left: auto;
     display: flex;
-    align-items: center; /* Align text and image vertically */
-    justify-content: flex-end; /* Align content to the right */
+    align-items: center;
+    justify-content: flex-end;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+    animation: ${fadeIn} 0.3s ease-out;
+    font-weight: 500;
   }
 
   .question img.question-image {
-    width: 25px;
-    height: 25px;
-    border-radius: 50%; /* Make the image circular */
-    margin-left: 10px; /* Add space between text and image */
-    object-fit: cover; /* Ensure the image fills the circular container */
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    margin-left: 10px;
+    object-fit: cover;
+    border: 2px solid white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   }
+
   .answer {
     text-align: left;
-    background-color: #b2bec3;
-    padding: 10px;
-    border-radius: 5px;
+    background-color: white;
+    padding: 15px 18px;
+    border-radius: 18px 18px 18px 0;
     display: inline-block;
-    margin-bottom: 20px;
-    max-width: 60%;
+    margin-bottom: 25px;
+    max-width: 70%;
     margin-right: auto;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    border-left: 3px solid #00cec9;
+    color: #4a5568;
+    line-height: 1.6;
+    animation: ${fadeIn} 0.5s ease-out;
+  }
+
+  .input-container {
+    position: relative;
+    margin-bottom: 20px;
+    animation: ${fadeIn} 0.8s ease-out;
   }
 
   textarea {
-    width: 96%;
-    height: 100px;
-    padding: 10px;
+    width: 100%;
+    height: 120px;
+    padding: 15px;
     font-size: 1rem;
-    border: 1px solid #b2bec3;
-    border-radius: 5px;
-    margin-bottom: 20px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
     resize: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    font-family: inherit;
+    color: #2d3748;
 
     &:focus {
       outline: none;
       border-color: #00cec9;
+      box-shadow: 0 0 0 3px rgba(0, 206, 201, 0.2);
+    }
+
+    &::placeholder {
+      color: #a0aec0;
     }
   }
 
+  .button-container {
+    display: flex;
+    justify-content: flex-end;
+    animation: ${fadeIn} 0.9s ease-out;
+  }
+
   button {
-    background-color: #00cec9;
+    background: linear-gradient(90deg, #00cec9, #0984e3);
     color: white;
     border: none;
-    padding: 10px 20px;
+    padding: 12px 25px;
     font-size: 1rem;
-    border-radius: 5px;
+    border-radius: 10px;
     cursor: pointer;
-    transition: background-color 0.3s;
-    width: 120px;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 140px;
 
     &:hover {
-      background-color: #0984e3;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    &:active {
+      transform: translateY(1px);
     }
 
     &:disabled {
-      background-color: #b2bec3;
+      background: linear-gradient(90deg, #cbd5e0, #a0aec0);
       cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
     }
   }
 
   .info {
-    color: #636e72;
-    font-size: 0.9rem;
-    margin-top: 10px;
+    color: #718096;
+    font-size: 1rem;
+    margin-top: 15px;
+    text-align: center;
+    line-height: 1.6;
+    animation: ${fadeIn} 1s ease-out;
+    padding: 15px;
+    background-color: #f8fafc;
+    border-radius: 10px;
+    border-left: 3px solid #00cec9;
+  }
+
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #718096;
+    font-size: 1.1rem;
+    text-align: center;
+    padding: 30px;
+    line-height: 1.6;
+  }
+
+  .empty-state-icon {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    color: #00cec9;
+    animation: ${pulse} 2s infinite;
   }
 `;
 
-export default function FaizanTalks() {
+const GenerateContent = () => {
   const [response, setResponse] = useState([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [savedChats, setSavedChats] = useState([]);
   const [currentChatKey, setCurrentChatKey] = useState(null);
+
+  const apiKey = "AIzaSyCmZo3BPYdF1bVl7bvXC_Zbo9xQENxWxBs";
+  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("savedChats")) || [];
@@ -295,7 +433,7 @@ export default function FaizanTalks() {
   const loadSavedChat = (chatKey) => {
     const savedChat = savedChats.find((chat) => chat.key === chatKey);
     if (savedChat) {
-      const allResponses = savedChat.responses.map((responseObj) => {
+      const allResponses = savedChat.responses.map((responseObj, index) => {
         const { question, answer } = Object.values(responseObj)[0];
         return { question, answer };
       });
@@ -314,6 +452,16 @@ export default function FaizanTalks() {
       setResponse([]);
     }
   };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter" && e.ctrlKey) {
+      e.preventDefault();
+      if (currentChatKey && search.trim()) {
+        generateContent();
+      }
+    }
+  };
+
   return (
     <Container>
       <Sidebar>
@@ -346,45 +494,51 @@ export default function FaizanTalks() {
                   {res.question}
                   <img
                     className="question-image"
-                    style={{ width: "20px" }}
                     src="https://etimg.etb2bimg.com/photo/100088163.cms"
-                    alt=""
+                    alt="User"
                   />
                 </div>
-                <br />
                 <div className="answer">{res.answer}</div>
               </div>
             ))
           ) : (
-            <div style={{ padding: "20px", fontSize: "16px", color: "#888" }}>
-              No responses yet. Be the first to send a message! 😊
+            <div className="empty-state">
+              <div className="empty-state-icon">💬</div>
+              <p>No responses yet. Start a new conversation!</p>
+              <p>Ask me anything about code, text, or general knowledge.</p>
             </div>
           )}
         </div>
-        <textarea
-          placeholder="Write code or text here..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        {currentChatKey && (
-          <button
-            onClick={generateContent}
-            disabled={loading || !currentChatKey}
-          >
-            {loading ? "Generating..." : "Generate"}
-          </button>
-        )}
 
-        {!currentChatKey && (
-          <div className="info">
-            Please click New Chat before generating content.
-            <br />
-            Or
-            <br />
-            you can continue with an existing chat.
-          </div>
-        )}
+        <div>
+          <textarea
+            placeholder="Write code or text here... (Ctrl+Enter to send)"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            onKeyDown={handleKeyPress}
+            disabled={!currentChatKey}
+          />
+        </div>
+
+        <div className="button-container">
+          {currentChatKey ? (
+            <button
+              onClick={generateContent}
+              disabled={loading || !currentChatKey || !search.trim()}
+            >
+              {loading ? "Generating..." : "Generate"}
+            </button>
+          ) : (
+            <div className="info">
+              Please click New Chat before generating content.
+              <br />
+              Or select an existing chat from the sidebar.
+            </div>
+          )}
+        </div>
       </MainContent>
     </Container>
   );
-}
+};
+
+export default GenerateContent;
